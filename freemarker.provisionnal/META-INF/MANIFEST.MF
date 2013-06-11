@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Freemarker Provisionnal
+Bundle-SymbolicName: freemarker.provisionnal
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: freemarker.provisionnal.core.ast,
+ freemarker.provisionnal.debug,
+ freemarker.provisionnal.debug.impl,
+ freemarker.provisionnal.debug.impl.rmi,
+ freemarker.provisionnal.ext.ide,
+ freemarker.provisionnal.ext.ide.syntax,
+ freemarker.provisionnal.template
+Require-Bundle: org.freemarker.freemarker;bundle-version="3.0.0"

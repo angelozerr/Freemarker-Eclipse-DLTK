@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+<!--   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.dltk.freemarker.launching.FreemarkerLaunchingPluginPreferenceInitializer">
+      </initializer>
+   </extension>
+-->
+
+   <extension
+         point="org.eclipse.dltk.launching.interpreterInstallTypes">
+          <interpreterInstallType
+            class="org.eclipse.dltk.freemarker.internal.launching.GenericFreemarkerInstallType"
+            id="org.eclipse.dltk.internal.debug.ui.launcher.GenericFreemarkerInstallType">
+      </interpreterInstallType>   
+   </extension>
+  
+  <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+         <launchConfigurationType
+               delegate="org.eclipse.dltk.freemarker.launching.FreemarkerLaunchConfigurationDelegate"
+               id="org.eclipse.dltk.freemarker.launching.FreemarkerLaunchConfigurationType"
+               modes="run,debug"
+               name="%FreemarkerLaunchConfigurationType.name"
+               public="true"
+               sourceLocatorId="freemarkerSourceLocator"
+               sourcePathComputerId="freemarkerSourcePathComputer" />
+         <!--<launchConfigurationType
+               delegate="org.eclipse.dltk.freemarker.launching.FreemarkerRemoteLaunchConfigurationDelegate"
+               id="org.eclipse.dltk.freemarker.launching.FreemarkerRemoteLaunchConfigurationType"
+               modes="debug"
+               name="%FreemarkerRemoteLaunchConfigurationType.name"
+               public="true"
+               sourceLocatorId="freemarkerSourceLocator" />   -->            
+   </extension>
+ 
+   <extension
+        point="org.eclipse.debug.core.sourceLocators">
+        <sourceLocator
+           class="org.eclipse.dltk.launching.sourcelookup.ScriptSourceLookupDirector"
+           id="freemarkerSourceLocator"
+           name="%FreemarkerSourceLocator.name" />
+   </extension>
+  
+   <extension 
+        point="org.eclipse.debug.core.sourcePathComputers">
+        <sourcePathComputer
+            class="org.eclipse.dltk.launching.sourcelookup.ScriptSourcePathComputer"
+            id="freemarkerSourcePathComputer"/>
+   </extension>
+ 
+   <extension
+         point="org.eclipse.dltk.launching.debuggingEngine">
+      <engineContribution
+            natureId="org.eclipse.dltk.freemarker.core.nature">
+         <selector
+               class="org.eclipse.dltk.freemarker.launching.FreemarkerDebuggingEngineSelector">
+         </selector>
+      </engineContribution>
+   </extension>
+   
+</plugin>

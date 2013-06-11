@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <!-- PopupMenu : Add Freemarker nature -->
+   <extension
+         id="org.eclipse.dltk.freemarker.PopupMenu"
+         name="PopupMenu"
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.eclipse.dltk.freemarker.PopupMenuObject">
+         <visibility>
+           <not>
+              <objectState
+                    name="nature"
+                    value="org.eclipse.dltk.freemarker.core.nature">
+              </objectState> 
+           </not>
+         </visibility>
+         <menu
+               label="%Freemarker.Popupmenu"
+               path="additions"
+               id="org.eclipse.dltk.freemarker.PopupMenu">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               class="org.eclipse.dltk.freemarker.ui.actions.nature.AddFreemarkerNatureActionDelegate"
+               enablesFor="1"
+               id="org.eclipse.dltk.freemarker.ui.actions.nature.AddFreemarkerNatureActionDelegate"
+               label="%AddFreemarkerNatureAction.label"
+               icon="icons/obj16/ftl.gif" />
+      </objectContribution>
+   </extension>
+   
+   <!-- PopupMenu : Remove akrogen capabilities -->
+   <extension
+         id="org.eclipse.dltk.freemarker.PopupMenu"
+         name="PopupMenu"
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.eclipse.dltk.freemarker.PopupMenuObject">
+         <visibility>           
+          <objectState
+                name="nature"
+                value="org.eclipse.dltk.freemarker.core.nature">
+          </objectState>            
+         </visibility>
+         <menu
+               label="%Freemarker.Popupmenu"
+               path="additions"
+               id="org.eclipse.dltk.freemarker.PopupMenu">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               class="org.eclipse.dltk.freemarker.ui.actions.nature.RemoveFreemarkerNatureActionDelegate"
+               enablesFor="1"
+               id="org.eclipse.dltk.freemarker.ui.actions.nature.RemoveFreemarkerNatureActionDelegate"
+               label="%RemoveFreemarkerNatureAction.label"
+               icon="icons/obj16/ftl.gif" />
+      </objectContribution>
+   </extension>
+
+   <!-- Freemarker multi page editor --> 
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.dltk.freemarker.internal.ui.editor.FreemarkerMultiPageEditor"
+            contributorClass="org.eclipse.dltk.freemarker.internal.ui.editor.FreemarkerMultiPageEditorContributor"
+            default="true"
+            extensions="ftl"
+            icon="icons/obj16/ftl.gif"
+            id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor"
+            name="DLTK Freemarker Editor">
+         <contentTypeBinding
+               contentTypeId="org.eclipse.dltk.freemarkerContentType">
+         </contentTypeBinding>
+      </editor>
+    </extension>
+  
+    <!-- Freemarker preference pages -->
+    <extension
+       point="org.eclipse.ui.preferencePages">  
+       <!-- Freemarker Global preferences page -->  
+       <page
+	          class="org.eclipse.dltk.freemarker.internal.ui.preferences.FreemarkerGlobalPreferencesPage"
+	          id="org.eclipse.dltk.freemarker.preferences"
+	          name="%FreemarkerPreferencePage.name"/>
+	    <!-- Freemarker Editor preferences page -->
+		<page
+	          category="org.eclipse.dltk.freemarker.preferences"
+	          class="org.eclipse.dltk.freemarker.internal.ui.preferences.FreemarkerEditorPreferencesPage"
+	          id="org.eclipse.dltk.freemarker.preferences.editor"
+	          name="%FreemarkerEditorPreferencePage.name"/>
+	    <!-- Freemarker Syntax Coloring preferences page -->
+		<page
+	          category="org.eclipse.dltk.freemarker.preferences.editor"
+	          class="org.eclipse.dltk.freemarker.internal.ui.preferences.FreemarkerEditorSyntaxColoringPreferencePage"
+	          id="org.eclipse.dltk.freemarker.preferences.editor.syntaxcoloring"
+	          name="%FreemarkerEditorSyntaxColoringPreferencePage.name"/>
+	    <!-- Freemarker Folding preferences page -->	
+	    <page
+          category="org.eclipse.dltk.freemarker.preferences.editor"
+          class="org.eclipse.dltk.freemarker.internal.ui.preferences.FreemarkerFoldingPreferencePage"
+          id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerFolding"
+          name="%FreemarkerEditorFoldingPreferencePage.name"/>
+	    <!-- Freemarker Templates preferences page -->
+     	<page
+              category="org.eclipse.dltk.freemarker.preferences.editor"
+              class="org.eclipse.dltk.freemarker.internal.ui.templates.FreemarkerCodeTemplatesPreferencePage"
+              id="org.eclipse.dltk.freemarker.preferences.templates"
+              name="%FreemarkerCodeTemplatesPreferencePage.name">
+     </page>	          
+   </extension>
+
+    <!-- Freemarker preference initializer -->
+    <extension 
+       point="org.eclipse.core.runtime.preferences">
+        <initializer 
+           class="org.eclipse.dltk.freemarker.internal.ui.FreemarkerUIPreferenceInitializer"/>
+    </extension>
+
+     <!-- Freemarker property pages -->
+     <extension
+       point="org.eclipse.ui.propertyPages">
+	    <page
+	          category="org.eclipse.dltk.freemarker.propertyPage"
+	          class="org.eclipse.dltk.freemarker.internal.ui.preferences.FreemarkerBuildPathPropertyPage"
+	          id="org.eclipse.dltk.freemarker.ui.BuildpathProperties"
+	          name="%FreemarkerBuildPathPropertyPage.name">
+	      <enabledWhen>
+	        <adapt type="org.eclipse.core.resources.IProject">
+	          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.dltk.freemarker.core.nature"/>
+	        </adapt>         
+	      </enabledWhen>
+	      <keywordReference
+	        id="org.eclipse.dltk.ui.buildpath" />
+	    </page>       
+        <page
+           name="%FreemarkerPropertyPage.name"
+           class="org.eclipse.dltk.freemarker.internal.ui.preferences.FreemarkerPropertyPage"
+           id="org.eclipse.dltk.freemarker.propertyPage">
+           <enabledWhen>
+             <adapt type="org.eclipse.core.resources.IProject">
+             <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.dltk.freemarker.core.nature"/>
+           </adapt>         
+          </enabledWhen>
+        </page>    
+     </extension>
+           
+    <!-- Templates Editor -->  
+    <extension
+       point="org.eclipse.ui.editors.templates">
+        <contextType
+              class="org.eclipse.dltk.freemarker.internal.ui.templates.FreemarkerUniversalTemplateContextType"
+              id="freemarkerUniversalTemplateContextType"
+              name="%FreemarkerTemplateContext.name">
+        </contextType>
+        <include
+              file="templates/templates.xml"
+              translations="$nl$/templates/templates.properties">
+        </include>
+     </extension>
+       
+     <!-- Code completion -->
+  	 <extension
+		point="org.eclipse.dltk.ui.scriptCompletionProposalComputer"
+		id="FreemarkerTypeCompletionProposalComputer">
+		<scriptCompletionProposalComputer 
+			class="org.eclipse.dltk.freemarker.internal.ui.text.completion.FreemarkerTypeCompletionProposalComputer"
+			categoryId="org.eclipse.dltk.ui.scriptTypeProposalCategory"
+			toolkitId="org.eclipse.dltk.freemarker.core.nature">
+			<partition type="__dftl_partition_content_type"/>
+		</scriptCompletionProposalComputer>	
+	</extension>      
+    
+    <!-- Contextual menu -->
+     <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="%FreemarkerEditContext.name"
+            description="%FreemarkerEditContext.description"
+            parentId="org.eclipse.dltk.ui.scriptEditorScope"
+            id="org.eclipse.dltk.ui.freemarkerEditorScope">
+      </context>
+    </extension>
+    
+    <!-- UI DLTK Language --> 
+	<extension
+       point="org.eclipse.dltk.ui.language">
+		<language
+          class="org.eclipse.dltk.freemarker.internal.ui.FreemarkerUILanguageToolkit"
+          nature="org.eclipse.dltk.freemarker.core.nature"/>
+   </extension>
+   
+   <extension
+      id="org.eclipse.dltk.freemarker.ui.editor.DocumentSetupParticipant"
+      name="%documentSetupParticipantName"
+      point="org.eclipse.core.filebuffers.documentSetup">
+		<participant extensions="ftl" 
+			class="org.eclipse.dltk.freemarker.internal.ui.editor.template.FreemarkerDocumentSetupParticipant">
+   		</participant>
+	</extension>
+
+   <!-- Freemarker Actions used into the Template tab of the Freemarker editor -->
+   <extension
+         point="org.eclipse.ui.commands">
+         <command
+            name="%ActionDefinition.addBlockComment.name"
+            description="%ActionDefinition.addBlockComment.description"
+            categoryId="org.eclipse.dltk.ui.category.source"
+            id="org.eclipse.dltk.ui.edit.text.script.add.block.comment">
+      </command>
+      <command
+            name="%ActionDefinition.removeBlockComment.name"
+            description="%ActionDefinition.removeBlockComment.description"
+            categoryId="org.eclipse.dltk.ui.category.source"
+            id="org.eclipse.dltk.ui.edit.text.script.remove.block.comment">
+      </command>
+   </extension>
+   
+      <extension
+       point="org.eclipse.ui.actionSets">
+        <actionSet
+            label="%ScriptCodingActionSet.label"
+            description="%ScriptCodingActionSet.description"
+            visible="false"
+            id="org.eclipse.dltk.freemarker.ui.CodingActionSet">
+   <!-- =========================================================================== -->
+<!-- Source Menu                                                                 -->
+<!-- =========================================================================== -->
+         <menu
+               label="%SourceMenu.label"
+               path="edit"
+               id="org.eclipse.dltk.ui.source.menu">
+		    <separator
+                  name="commentGroup">
+            </separator>
+            <separator
+                  name="editGroup">
+            </separator>
+            <separator
+                  name="importGroup">
+            </separator>
+            <separator
+                  name="generateGroup">
+            </separator>
+            <separator
+                  name="codeGroup">
+            </separator>
+            <separator
+                  name="externalizeGroup">
+            </separator>
+            <separator
+                  name="convertGroup">
+            </separator>
+         </menu>
+      
+         <action
+               definitionId="org.eclipse.dltk.ui.edit.text.script.uncomment"
+               label="%UncommentAction.label"
+               retarget="true"
+               id="org.eclipse.dltk.ui.actions.Uncomment">
+         </action>
+         <action
+               definitionId="org.eclipse.dltk.ui.edit.text.script.comment"
+               label="%CommentAction.label"
+               retarget="true"
+               id="org.eclipse.dltk.ui.actions.Comment">
+         </action>
+		<action
+               definitionId="org.eclipse.dltk.ui.edit.text.script.remove.block.comment"
+               label="%RemoveBlockCommentAction.label"
+               retarget="true"
+               menubarPath="org.eclipse.dltk.ui.source.menu/commentGroup"
+               id="org.eclipse.dltk.ui.actions.RemoveBlockComment">
+         </action>
+         <action
+               definitionId="org.eclipse.dltk.ui.edit.text.script.add.block.comment"
+               label="%AddBlockCommentAction.label"
+               retarget="true"
+               menubarPath="org.eclipse.dltk.ui.source.menu/commentGroup"
+               id="org.eclipse.dltk.ui.actions.AddBlockComment">
+         </action>
+      </actionSet>
+   </extension>      
+
+   <!-- Display menu source when FreemarkerTemplatePage has focus. -->
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.dltk.freemarker.ui.CodingActionSet">
+         <part id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor"/>
+	     <part id="org.eclipse.dltk.ui.ScriptExplorer"/>
+      </actionSetPartAssociation>   
+         
+      <actionSetPartAssociation
+            targetID="org.eclipse.dltk.ui.ScriptCodingActionSet">
+         <part id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor"/>
+      </actionSetPartAssociation>    
+        
+      <actionSetPartAssociation
+            targetID="org.eclipse.ui.edit.text.actionSet.presentation">
+         <part id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor"/>
+	  </actionSetPartAssociation>  
+   </extension>
+   
+   <!-- Key binding with actions -->     
+   <extension
+       point="org.eclipse.ui.bindings">
+       <key
+            sequence="M1+M2+/"
+            contextId="org.eclipse.dltk.ui.freemarkerEditorScope"
+            commandId="org.eclipse.dltk.ui.edit.text.script.add.block.comment"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <!-- free this on MAC, see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=113981 -->
+      <key
+            platform="carbon"
+            sequence="M1+M2+/"
+            contextId="org.eclipse.dltk.ui.freemarkerEditorScope"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            sequence="M1+M2+\"
+            contextId="org.eclipse.dltk.ui.freemarkerEditorScope"
+            commandId="org.eclipse.dltk.ui.edit.text.script.remove.block.comment"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+ 	</extension>
+         
+    <!-- Hyperlink -->     
+    <extension
+	   	point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+	   	<hyperlinkDetector
+	   		id="org.eclipse.dltk.freemarker.IncludeHyperlinkDetector"
+	   		targetId="org.eclipse.dltk.freemarker.code"
+	   		class="org.eclipse.dltk.freemarker.internal.ui.text.hyperlink.FreemarkerIncludeHyperlinkDetector"
+	   		name="%hyperlinkDetector.name.freemarkerInclude">
+	   	</hyperlinkDetector>
+    </extension>
+	
+    <extension
+	   	point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+	   	<target id="org.eclipse.dltk.freemarker.code" name="%target.name.freemarkerEditor">
+	   		<context type="org.eclipse.ui.texteditor.ITextEditor" />
+	   	</target>
+    </extension>
+    
+    <!-- Freemarker preview View -->    
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+          name="%viewCategoryName"
+          id="org.eclipse.dltk.freemarker.ui">
+      </category>
+      <view
+            name="%FreemarkerPreviewView"
+            icon="$nl$/icons/eview16/preview.gif"
+            category="org.eclipse.dltk.freemarker.ui"
+            class="org.eclipse.dltk.freemarker.internal.ui.view.FreemarkerPreviewView"
+            id="org.eclipse.dltk.freemarker.ui.FreemarkerPreviewView">
+      </view>
+   </extension>        
+   
+   <!-- Folding to collapse/expand Freemarker comments block into Freemarker Editor-->
+	<extension point="org.eclipse.dltk.ui.folding">
+	  <structureProvider 
+	   	nature="org.eclipse.dltk.freemarker.core.nature"
+	   	class="org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider">
+	  </structureProvider>
+	  <blockProvider
+	    nature="org.eclipse.dltk.freemarker.core.nature"
+	    class="org.eclipse.dltk.freemarker.internal.ui.text.folding.FreemarkerCommentFoldingBlockProvider">
+	  </blockProvider>
+	  <!--<blockProvider
+	    nature="org.eclipse.dltk.freemarker.core.nature"
+	    class="org.eclipse.dltk.freemarker.internal.ui.text.folding.FreemarkerCodeFoldingBlockProvider">
+	  </blockProvider>-->
+	</extension>   
+	
+	<!-- Freemarker Wizard -->
+	<extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.dltk.freemarker.ui"
+            name="%FreemarkerWizardsCategory.name" >
+      </category>	
+      <wizard
+            category="org.eclipse.dltk.freemarker.ui"
+            class="org.eclipse.dltk.freemarker.internal.ui.wizards.FreemarkerNewProjectWizard"
+            finalPerspective="org.eclipse.dltk.freemarker.ui.FreemarkerPerspective"
+            icon="$nl$/icons/etool16/newprj_wiz.gif"
+            id="org.eclipse.dltk.freemarker.wizards.newproject"
+            name="%NewProjectWizard.name"
+            preferredPerspectives="org.eclipse.dltk.freemarker.ui.FreemarkerPerspective"
+            project="true">
+         <description>%NewProjectWizard.description</description>
+      </wizard>      
+      <wizard
+             category="org.eclipse.dltk.freemarker.ui"
+             class="org.eclipse.dltk.freemarker.internal.ui.wizards.FreemarkerNewFileWizard"
+             icon="$nl$/icons/etool16/newfile_wiz.gif"
+             id="org.eclipse.dltk.freemarker.wizards.newfile"
+             name="%NewFileWizard.name">
+          <description>%NewFileWizard.description</description>
+       </wizard>
+    </extension>
+
+	<!-- Freemarker Perspective -->
+	<extension
+	       point="org.eclipse.ui.perspectives">
+	    <perspective
+	          class="org.eclipse.dltk.freemarker.internal.ui.FreemarkerPerspective"
+	          icon="icons/eview16/freemarker_persp.gif"
+	          id="org.eclipse.dltk.freemarker.ui.FreemarkerPerspective"
+	          name="%FreemarkerPerspectiveName"/>
+	 </extension>       
+</plugin>

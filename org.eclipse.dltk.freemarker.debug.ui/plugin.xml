@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!-- Initialize preferences Freemarker Debug UI -->
+  <extension point="org.eclipse.core.runtime.preferences">
+    <initializer class="org.eclipse.dltk.freemarker.internal.debug.ui.FreemarkerDebugUIPreferenceInitializer" />
+  </extension>
+  
+  <extension
+	point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+ 		<launchConfigurationTypeImage
+			icon="icons/obj16/ftl.gif"
+			configTypeID="org.eclipse.dltk.freemarker.launching.FreemarkerLaunchConfigurationType"
+			id="org.eclipse.dltk.freemarker.debug.ui.launchConfigurationTypeImage.localFreemarkerScript" />
+		<!--<launchConfigurationTypeImage
+            icon="icons/obj16/freemarker_obj.gif"
+            configTypeID="org.eclipse.dltk.freemarker.launching.FreemarkerRemoteLaunchConfigurationType"
+            id="org.eclipse.dltk.freemarker.debug.ui.launchConfigurationTypeImage.remoteFreemarkerScript" />-->		
+  </extension>
+  
+  <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.eclipse.dltk.freemarker.launching.FreemarkerLaunchConfigurationType"
+            class="org.eclipse.dltk.freemarker.internal.debug.ui.launchConfigurations.FreemarkerTabGroup"
+            id="org.eclipse.dltk.freemarker.debug.ui.FreemarkerTabGroup" />
+      <!--<launchConfigurationTabGroup
+            type="org.eclipse.dltk.freemarker.launching.FreemarkerRemoteLaunchConfigurationType"
+            class="org.eclipse.dltk.freemarker.internal.debug.ui.launchConfigurations.FreemarkerRemoteTabGroup"
+            id="org.eclipse.dltk.freemarker.debug.ui.FreemarkerRemoteTabGroup" />-->
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+          class="org.eclipse.dltk.freemarker.internal.debug.ui.launcher.FreemarkerLaunchShortcut"
+          icon="icons/obj16/ftl.gif"
+          id="org.eclipse.dltk.freemarker.debug.ui.launchShortcut"
+          label="Freemarker"
+          modes="run, debug">
+		<perspective id="org.eclipse.dltk.freemarker.ui.FreemarkerPerspective"/> 
+        <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                <or>
+           	     <test property="org.eclipse.dltk.launching.hasProjectNature" 
+           	           args="org.eclipse.dltk.freemarker.core.nature"/>           	  
+               	</or>
+               </iterate>
+               </with>
+           </enablement>
+  		 </contextualLaunch>
+         <perspective
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspective>
+	</shortcut>
+	</extension>
+
+    <!--<extension point="org.eclipse.dltk.ui.buildpathContainerPage">
+		<buildpathContainerPage
+			class="org.eclipse.dltk.freemarker.internal.debug.ui.interpreters.FreemarkerInterpreterContainerWizardPage"
+			id="org.eclipse.dltk.freemarker.launching.INTERPRETER_CONTAINER"
+			name="Freemarker Interpreter Libraries"
+			nature="org.eclipse.dltk.freemarker.core.nature" />
+	</extension>-->
+	
+	<extension point="org.eclipse.core.runtime.adapters">
+       <factory
+          adaptableType="org.eclipse.dltk.freemarker.internal.ui.editor.template.TemplateEditor"
+          class="org.eclipse.dltk.freemarker.internal.debug.ui.FreemarkerEditorDebugAdapterFactory">
+           <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
+           <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
+       </factory>         
+    </extension>
+    
+    <extension point="org.eclipse.core.runtime.adapters">
+       <factory
+          adaptableType="org.eclipse.dltk.freemarker.internal.ui.editor.FreemarkerMultiPageEditor"
+          class="org.eclipse.dltk.freemarker.internal.debug.ui.FreemarkerEditorDebugAdapterFactory">
+           <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
+           <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
+       </factory>         
+    </extension>
+    
+  <!-- Add Freemarker Interpreter into Preferences Freemarker page -->
+  <extension point="org.eclipse.ui.preferencePages">
+    <page
+      category="org.eclipse.dltk.freemarker.preferences"
+      class="org.eclipse.dltk.freemarker.internal.debug.ui.interpreters.FreemarkerInterpreterPreferencePage"
+      id="org.eclipse.dltk.debug.ui.FreemarkerInterpreters"
+      name="%Interpreters.PreferencePage" />
+    <page
+      category="org.eclipse.dltk.freemarker.preferences"
+      class="org.eclipse.dltk.freemarker.internal.debug.ui.preferences.FreemarkerDebugPreferencePage"
+      id="org.eclipse.dltk.freemarker.preferences.debug"
+      name="%Debug.PreferencePage">
+    </page>      
+    <page
+      category="org.eclipse.dltk.freemarker.preferences.debug"
+      class="org.eclipse.dltk.freemarker.internal.debug.ui.preferences.FreemarkerDebuggingEnginePreferencePage"
+      id="org.eclipse.dltk.freemarker.preferences.debug.engines"
+      name="%Engines.PreferencePage">            
+    </page>      
+  </extension>
+  
+  <!-- Add Freemarker Debug+Engine into Property Freemarker page -->
+  <extension
+    point="org.eclipse.ui.propertyPages">
+    <page
+      class="org.eclipse.dltk.freemarker.internal.debug.ui.preferences.FreemarkerDebugPreferencePage"
+      category="org.eclipse.dltk.freemarker.propertyPage"
+      id="org.eclipse.dltk.freemarker.propertyPage.debug"
+      name="%Debug.PropertyPage">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.dltk.freemarker.core.nature"/>
+        </adapt>         
+      </enabledWhen>
+   </page>
+   <page
+      class="org.eclipse.dltk.freemarker.internal.debug.ui.preferences.FreemarkerDebuggingEnginePreferencePage"
+      category="org.eclipse.dltk.freemarker.propertyPage.debug"
+      id="org.eclipse.dltk.freemarker.propertyPage.debug.engines"
+      name="%Engines.PropertyPage">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.dltk.freemarker.core.nature"/>
+        </adapt>         
+      </enabledWhen>
+   </page>
+   </extension>
+  
+        	   
+   <extension
+        point="org.eclipse.dltk.launching.interpreterInstalls">
+     <interpreterInstall
+           home="${eclipse_home}"
+           id="org.eclipse.dltk.freemarker.launching.embeddedFreemarker"
+           interpreterInstallType="org.eclipse.dltk.internal.debug.ui.launcher.GenericFreemarkerInstallType"
+           name="Freemarker Interpreter">
+     </interpreterInstall>
+  </extension>
+          	   
+  <!-- Freemarker Debug UI Language Toolkit -->
+  <extension point="org.eclipse.dltk.debug.ui.language">
+    <language
+      class="org.eclipse.dltk.freemarker.internal.debug.ui.FreemarkerDebugUILanguageToolkit"
+      nature="org.eclipse.dltk.freemarker.core.nature"/>
+  </extension>
+  
+  <!-- Breakpoint Actions for Freemarker Editor -->
+  <extension point="org.eclipse.ui.editorActions">
+		<editorContribution
+			targetID="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditorSite"
+			id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor.BreakpointRulerActions">
+
+			<action label="%ToggleBreakpoint.label"
+				class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+				style="push" actionID="RulerDoubleClick"
+				id="FreemarkerEditor.doubleClickBreakpointAction" />
+		</editorContribution>
+  </extension>
+  
+  <extension point="org.eclipse.ui.popupMenus">
+		<viewerContribution
+			id="org.eclipse.dltk.freemarker.debug.ui.rulerContribution"
+			targetID="#FreemarkerRulerContext">
+
+			<action label="%EnableDisableBreakpoint.label"
+				id="org.eclipse.dltk.freemarker.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+				class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+				menubarPath="debug">
+			</action>
+
+			<action label="%ToggleBreakpoint.label"
+				id="org.eclipse.dltk.freemarker.ui.actions.RulerToggleBreakpointActionDelegate"
+				class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+				menubarPath="debug">
+			</action>
+
+			<action
+				class="org.eclipse.dltk.debug.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
+				id="org.eclipse.dltk.freemarker.debug.ui.ScriptBreakpointPropertiesRulerActionDelegate"
+				label="%BreakpointProperties.label" 
+				menubarPath="group.properties" />
+		</viewerContribution>
+		
+		<viewerContribution targetID="#FreemarkerEditorContext"
+			id="org.eclipse.dltk.debug.ui.DebugPopupActions">
+			<visibility>
+				<and>
+					<systemProperty
+						name="org.eclipse.dltk.debug.ui.debuggerActive" value="true">
+					</systemProperty>
+					<objectClass
+						name="org.eclipse.jface.text.ITextSelection">
+					</objectClass>
+				</and>
+			</visibility>
+			<action label="%ScriptWatch.label"
+				icon="$nl$/icons/etool16/watch_exp.gif"
+				class="org.eclipse.dltk.internal.debug.ui.actions.ScriptWatchAction"
+				menubarPath="additions"
+				id="org.eclipse.dltk.freemarker.debug.ui.ScriptWatch">
+			</action>
+			<action label="%ScriptInspect.label"
+				icon="$nl$/icons/etool16/insp_sbook.gif"
+				definitionId="org.eclipse.dlkt.debug.ui.commands.ScriptInspect"
+				class="org.eclipse.dltk.internal.debug.ui.actions.PopupScriptInspectAction"
+				menubarPath="additions"
+				id="org.eclipse.dltk.freemarker.debug.ui.ScriptInspect">
+			</action>
+			<action label="%ScriptDisplay.label"
+				icon="$nl$/icons/etool16/disp_sbook.gif"
+				definitionId="org.eclipse.dlkt.debug.ui.commands.ScriptDisplay"
+				class="org.eclipse.dltk.internal.debug.ui.actions.PopupScriptDisplayAction"
+				menubarPath="additions"
+				id="org.eclipse.dltk.freemarker.debug.ui.ScriptDisplay">
+			</action>
+		</viewerContribution>
+	</extension>  
+	
+	<!-- Display toolbar (Run/Debug) source when FreemarkerTemplatePage has focus. -->
+	<extension point="org.eclipse.ui.actionSetPartAssociations">
+		<actionSetPartAssociation
+			targetID="org.eclipse.debug.ui.launchActionSet">
+			<part id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor" />
+		</actionSetPartAssociation>
+		<actionSetPartAssociation
+			targetID="org.eclipse.debug.ui.launchActionSet">
+			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
+			<part id="org.eclipse.dltk.freemarker.ui.editor.FreemarkerEditor" />
+		</actionSetPartAssociation>
+	</extension>
+	
+	<!-- Freemarker Debug Model Presentation -->
+    <extension point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+        class="org.eclipse.dltk.freemarker.internal.debug.ui.FreemarkerDebugModelPresentation"
+        id="org.eclipse.dltk.debug.freemarkerModel" />
+    </extension>	
+    
+</plugin>

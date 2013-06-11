@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Freemarker Provisionnal JUnit Tests
+Bundle-SymbolicName: freemarker.provisionnal.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: tests.jar,
+ lib/freemarker.jar
+Export-Package: freemarker.provisionnal.ext.ide,
+ freemarker.provisionnal.ext.ide.model
+Require-Bundle: org.freemarker.freemarker;bundle-version="3.0.0",
+ freemarker.provisionnal;bundle-version="1.0.0"

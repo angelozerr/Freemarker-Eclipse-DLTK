@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.dltk.dbgp.debugger
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Localization: plugin
+Export-Package: org.eclipse.dltk.dbgp.debugger,
+ org.eclipse.dltk.dbgp.debugger.debugger,
+ org.eclipse.dltk.dbgp.debugger.debugger.event,
+ org.eclipse.dltk.dbgp.debugger.packet.sender
+Require-Bundle: org.eclipse.dltk.debug,
+ org.eclipse.core.runtime
+Bundle-Vendor: %pluginProvider

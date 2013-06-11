@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!-- DLTK Freemarker Debug Preference Initializer -->  
+  <extension point="org.eclipse.core.runtime.preferences">
+    <initializer 
+      class="org.eclipse.dltk.freemarker.internal.debug.FreemarkerDebugPreferenceInitializer"/>
+  </extension>
+
+  <!-- DLTK scriptDebugModel to define translation of Freemarker language 
+       types into Java types that are displayable in for instance variables view when debugging. -->
+   <extension
+         point="org.eclipse.dltk.debug.scriptDebugModel">
+      <debugModel
+            debugModelId="org.eclipse.dltk.debug.freemarkerModel"
+            natureId="org.eclipse.dltk.freemarker.core.nature"
+            debugToolkit="org.eclipse.dltk.freemarker.internal.debug.FreemarkerDebugToolkit"
+            typeFactory="org.eclipse.dltk.freemarker.internal.debug.FreemarkerTypeFactory">
+      </debugModel>
+   </extension> 
+   
+</plugin>

@@ -1,0 +1,15 @@
+<#-- Some FTL comments.... <#assign sequence = ['a', 'b'] />
+<#include "test.ftl" >
+<#list sequence as item>
+	${item}	
+</#list>-->
+
+<#assign name = true />
+<#if name >
+	Hello!
+</#if>
+
+<#assign sequence = ['a', 'b'] />
+<#list sequence as item>
+	${item}	
+</#list>
