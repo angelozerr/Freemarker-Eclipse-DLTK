@@ -13,7 +13,6 @@ package freemarker.provisionnal.template;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,25 +20,20 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
 
-
 import freemarker.cache.CacheStorage;
-import freemarker.cache.TemplateCache;
 import freemarker.cache.TemplateLoader;
-import freemarker.core.Configurable;
-import freemarker.core.Environment;
-import freemarker.core.Scope;
-import freemarker.core.ast.ASTVisitor;
-import freemarker.core.ast.ArithmeticEngine;
+import freemarker.core.ArithmeticEngine;
+import freemarker.core.TemplateClassResolver;
 import freemarker.provisionnal.debug.impl.DebuggerService;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
-import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.Version;
 
 /**
  * Debuggable configuration wrapper which register the template into a debugger
@@ -50,23 +44,36 @@ public class DebuggableConfigurationWrapper extends Configuration {
 
 	private final Configuration configuration;
 	private final DebuggerService debuggerService;
+	private String booleanFormat;
 
 	public DebuggableConfigurationWrapper(Configuration configuration,
 			DebuggerService debuggerService) {
 		this.configuration = configuration;
 		this.debuggerService = debuggerService;
+		if (booleanFormat != null) {
+			configuration.setBooleanFormat(booleanFormat);
+		}
 	}
 
-	public void addAutoImport(String namespace, String template) {
-		configuration.addAutoImport(namespace, template);
+	@Override
+	public Template getTemplate(String name, Locale locale, String encoding,
+			boolean parseAsFTL) throws IOException {
+		Template template = configuration.getTemplate(name, locale, encoding,
+				parseAsFTL);
+		if (template != null) {
+			// Template is created (ex : with <#import 'test.ftl' > directive),
+			// register it to the debugger service.
+			debuggerService.registerTemplate(template);
+		}
+		return template;
+	}
+
+	public void addAutoImport(String namespaceVarName, String templateName) {
+		configuration.addAutoImport(namespaceVarName, templateName);
 	}
 
 	public void addAutoInclude(String templateName) {
 		configuration.addAutoInclude(templateName);
-	}
-
-	public void addAutoTemplateVisitors(ASTVisitor... visitors) {
-		configuration.addAutoTemplateVisitors(visitors);
 	}
 
 	public void clearEncodingMap() {
@@ -85,28 +92,28 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		return configuration.clone();
 	}
 
-	public boolean definesVariable(String name) {
-		return configuration.definesVariable(name);
-	}
-
 	public boolean equals(Object arg0) {
 		return configuration.equals(arg0);
-	}
-
-	public TemplateModel get(String name) {
-		return configuration.get(name);
 	}
 
 	public ArithmeticEngine getArithmeticEngine() {
 		return configuration.getArithmeticEngine();
 	}
 
+	public boolean getAutoFlush() {
+		return configuration.getAutoFlush();
+	}
+
 	public String getBooleanFormat() {
 		return configuration.getBooleanFormat();
 	}
 
-	public String getBooleanFormat(boolean value) {
-		return configuration.getBooleanFormat(value);
+	public CacheStorage getCacheStorage() {
+		return configuration.getCacheStorage();
+	}
+
+	public int getClassicCompatibleAsInt() {
+		return configuration.getClassicCompatibleAsInt();
 	}
 
 	public Object getCustomAttribute(String name) {
@@ -129,20 +136,16 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		return configuration.getDefaultEncoding();
 	}
 
-	public Collection<String> getDirectVariableNames() {
-		return configuration.getDirectVariableNames();
+	public String getEncoding(Locale arg0) {
+		return configuration.getEncoding(arg0);
 	}
 
-	public Scope getEnclosingScope() {
-		return configuration.getEnclosingScope();
+	public String getIncompatibleEnhancements() {
+		return configuration.getIncompatibleEnhancements();
 	}
 
-	public String getEncoding(Locale loc) {
-		return configuration.getEncoding(loc);
-	}
-
-	public Environment getEnvironment() {
-		return configuration.getEnvironment();
+	public Version getIncompatibleImprovements() {
+		return configuration.getIncompatibleImprovements();
 	}
 
 	public Locale getLocale() {
@@ -151,6 +154,10 @@ public class DebuggableConfigurationWrapper extends Configuration {
 
 	public boolean getLocalizedLookup() {
 		return configuration.getLocalizedLookup();
+	}
+
+	public TemplateClassResolver getNewBuiltinClassResolver() {
+		return configuration.getNewBuiltinClassResolver();
 	}
 
 	public String getNumberFormat() {
@@ -165,6 +172,10 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		return configuration.getOutputEncoding();
 	}
 
+	public int getParsedIncompatibleEnhancements() {
+		return configuration.getParsedIncompatibleEnhancements();
+	}
+
 	public String getSetting(String key) {
 		return configuration.getSetting(key);
 	}
@@ -177,20 +188,20 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		return configuration.getSharedVariable(name);
 	}
 
-	public Set<String> getSharedVariableNames() {
+	public Set getSharedVariableNames() {
 		return configuration.getSharedVariableNames();
 	}
 
-	public boolean getStrictVariableDefinition() {
-		return configuration.getStrictVariableDefinition();
+	public boolean getStrictSyntaxMode() {
+		return configuration.getStrictSyntaxMode();
+	}
+
+	public Set getSupportedBuiltInNames() {
+		return configuration.getSupportedBuiltInNames();
 	}
 
 	public int getTagSyntax() {
 		return configuration.getTagSyntax();
-	}
-
-	public Template getTemplate() {
-		return configuration.getTemplate();
 	}
 
 	public Template getTemplate(String name, Locale locale, String encoding)
@@ -209,23 +220,6 @@ public class DebuggableConfigurationWrapper extends Configuration {
 
 	public Template getTemplate(String name) throws IOException {
 		return configuration.getTemplate(name);
-	}
-
-	@Override
-	public Template getTemplate(String name, Locale locale, String encoding,
-			boolean parse) throws IOException {
-		Template template = configuration.getTemplate(name, locale, encoding,
-				parse);
-		if (template != null) {
-			// Template is created (ex : with <#import 'test.ftl' > directive),
-			// register it to the debugger service.
-			debuggerService.registerTemplate(template);
-		}
-		return template;
-	}
-
-	public TemplateCache getTemplateCache() {
-		return configuration.getTemplateCache();
 	}
 
 	public TemplateExceptionHandler getTemplateExceptionHandler() {
@@ -256,48 +250,48 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		return configuration.hashCode();
 	}
 
-	public boolean isEmpty() {
-		return configuration.isEmpty();
-	}
-
-	public boolean isSecure() {
-		return configuration.isSecure();
-	}
-
-	public TemplateCollectionModel keys() {
-		return configuration.keys();
+	public boolean isClassicCompatible() {
+		return configuration.isClassicCompatible();
 	}
 
 	public void loadBuiltInEncodingMap() {
 		configuration.loadBuiltInEncodingMap();
 	}
 
-	public void put(String varname, TemplateModel value) {
-		configuration.put(varname, value);
-	}
-
-	public TemplateModel remove(String varname) {
-		return configuration.remove(varname);
-	}
-
-	public void removeAutoImport(String namespace) {
-		configuration.removeAutoImport(namespace);
+	public void removeAutoImport(String namespaceVarName) {
+		configuration.removeAutoImport(namespaceVarName);
 	}
 
 	public void removeAutoInclude(String templateName) {
 		configuration.removeAutoInclude(templateName);
 	}
 
-	public void removeAutoTemplateVisitors(ASTVisitor... visitors) {
-		configuration.removeAutoTemplateVisitors(visitors);
-	}
-
 	public void removeCustomAttribute(String name) {
 		configuration.removeCustomAttribute(name);
 	}
 
-	public TemplateModel resolveVariable(String name) {
-		return configuration.resolveVariable(name);
+	public void removeTemplateFromCache(String name, Locale locale,
+			String encoding, boolean parse) throws IOException {
+		configuration.removeTemplateFromCache(name, locale, encoding, parse);
+	}
+
+	public void removeTemplateFromCache(String name, Locale locale,
+			String encoding) throws IOException {
+		configuration.removeTemplateFromCache(name, locale, encoding);
+	}
+
+	public void removeTemplateFromCache(String name, Locale locale)
+			throws IOException {
+		configuration.removeTemplateFromCache(name, locale);
+	}
+
+	public void removeTemplateFromCache(String name, String encoding)
+			throws IOException {
+		configuration.removeTemplateFromCache(name, encoding);
+	}
+
+	public void removeTemplateFromCache(String name) throws IOException {
+		configuration.removeTemplateFromCache(name);
 	}
 
 	public void setAllSharedVariables(TemplateHashModelEx hash)
@@ -309,20 +303,24 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setArithmeticEngine(arithmeticEngine);
 	}
 
-	public void setAutoImports(Map<String, String> map) {
+	public void setAutoFlush(boolean autoFlush) {
+		configuration.setAutoFlush(autoFlush);
+	}
+
+	public void setAutoImports(Map map) {
 		configuration.setAutoImports(map);
 	}
 
-	public void setAutoIncludes(List<String> templateNames) {
-		configuration.setAutoIncludes(templateNames);
-	}
-
-	public void setAutoTemplateVisitors(ASTVisitor... visitors) {
-		configuration.setAutoTemplateVisitors(visitors);
+	public void setAutoIncludes(List arg0) {
+		configuration.setAutoIncludes(arg0);
 	}
 
 	public void setBooleanFormat(String booleanFormat) {
-		configuration.setBooleanFormat(booleanFormat);
+		if (configuration == null) {
+			this.booleanFormat = booleanFormat;
+		} else {
+			configuration.setBooleanFormat(booleanFormat);
+		}
 	}
 
 	public void setCacheStorage(CacheStorage storage) {
@@ -331,6 +329,14 @@ public class DebuggableConfigurationWrapper extends Configuration {
 
 	public void setClassForTemplateLoading(Class clazz, String pathPrefix) {
 		configuration.setClassForTemplateLoading(clazz, pathPrefix);
+	}
+
+	public void setClassicCompatible(boolean classicCompatibility) {
+		configuration.setClassicCompatible(classicCompatibility);
+	}
+
+	public void setClassicCompatibleAsInt(int classicCompatibility) {
+		configuration.setClassicCompatibleAsInt(classicCompatibility);
 	}
 
 	public void setCustomAttribute(String name, Object value) {
@@ -349,12 +355,20 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setDefaultEncoding(encoding);
 	}
 
-	public void setDirectoryForTemplateLoading(File dir) throws IOException {
-		configuration.setDirectoryForTemplateLoading(dir);
+	public void setDirectoryForTemplateLoading(File arg0) throws IOException {
+		configuration.setDirectoryForTemplateLoading(arg0);
 	}
 
 	public void setEncoding(Locale locale, String encoding) {
 		configuration.setEncoding(locale, encoding);
+	}
+
+	public void setIncompatibleEnhancements(String version) {
+		configuration.setIncompatibleEnhancements(version);
+	}
+
+	public void setIncompatibleImprovements(Version version) {
+		configuration.setIncompatibleImprovements(version);
 	}
 
 	public void setLocale(Locale locale) {
@@ -365,12 +379,13 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setLocalizedLookup(localizedLookup);
 	}
 
-	public void setNumberFormat(String numberFormat) {
-		configuration.setNumberFormat(numberFormat);
+	public void setNewBuiltinClassResolver(
+			TemplateClassResolver newBuiltinClassResolver) {
+		configuration.setNewBuiltinClassResolver(newBuiltinClassResolver);
 	}
 
-	public void setNumbersForComputers(boolean b) {
-		configuration.setNumbersForComputers(b);
+	public void setNumberFormat(String numberFormat) {
+		configuration.setNumberFormat(numberFormat);
 	}
 
 	public void setObjectWrapper(ObjectWrapper objectWrapper) {
@@ -381,20 +396,12 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setOutputEncoding(outputEncoding);
 	}
 
-	public void setParent(Configurable parent) {
-		configuration.setParent(parent);
+	public void setServletContextForTemplateLoading(Object arg0, String arg1) {
+		configuration.setServletContextForTemplateLoading(arg0, arg1);
 	}
 
-	public void setSecure(boolean secure) {
-		configuration.setSecure(secure);
-	}
-
-	public void setServletContextForTemplateLoading(Object sctxt, String path) {
-		configuration.setServletContextForTemplateLoading(sctxt, path);
-	}
-
-	public void setSetting(String key, String value) throws TemplateException {
-		configuration.setSetting(key, value);
+	public void setSetting(String arg0, String arg1) throws TemplateException {
+		configuration.setSetting(arg0, arg1);
 	}
 
 	public void setSettings(InputStream propsIn) throws TemplateException,
@@ -402,8 +409,8 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setSettings(propsIn);
 	}
 
-	public void setSettings(Properties props) throws TemplateException {
-		configuration.setSettings(props);
+	public void setSettings(Properties arg0) throws TemplateException {
+		configuration.setSettings(arg0);
 	}
 
 	public void setSharedVariable(String name, Object obj)
@@ -419,16 +426,12 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setStrictBeanModels(strict);
 	}
 
-	public void setStrictVariableDefinition(boolean b) {
-		configuration.setStrictVariableDefinition(b);
+	public void setStrictSyntaxMode(boolean b) {
+		configuration.setStrictSyntaxMode(b);
 	}
 
 	public void setTagSyntax(int tagSyntax) {
 		configuration.setTagSyntax(tagSyntax);
-	}
-
-	public void setTemplateCache(TemplateCache cache) {
-		configuration.setTemplateCache(cache);
 	}
 
 	public void setTemplateExceptionHandler(
@@ -440,8 +443,8 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setTemplateLoader(loader);
 	}
 
-	public void setTemplateUpdateDelay(int delay) {
-		configuration.setTemplateUpdateDelay(delay);
+	public void setTemplateUpdateDelay(int seconds) {
+		configuration.setTemplateUpdateDelay(seconds);
 	}
 
 	public void setTimeFormat(String timeFormat) {
@@ -452,10 +455,6 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setTimeZone(timeZone);
 	}
 
-	public void setTolerateParsingProblems(boolean tolerateParsingProblems) {
-		configuration.setTolerateParsingProblems(tolerateParsingProblems);
-	}
-
 	public void setURLEscapingCharset(String urlEscapingCharset) {
 		configuration.setURLEscapingCharset(urlEscapingCharset);
 	}
@@ -464,15 +463,8 @@ public class DebuggableConfigurationWrapper extends Configuration {
 		configuration.setWhitespaceStripping(b);
 	}
 
-	public int size() {
-		return configuration.size();
-	}
-
 	public String toString() {
 		return configuration.toString();
 	}
 
-	public TemplateCollectionModel values() {
-		return configuration.values();
-	}
 }

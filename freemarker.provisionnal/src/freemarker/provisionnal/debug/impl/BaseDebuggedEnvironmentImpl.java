@@ -374,15 +374,19 @@ implements
     
     public Collection<String> getGlobalVariableNames() throws RemoteException {    
     	try {
-			return env.getDirectVariableNames();
+    		// FIXME : 
+    		return env.getKnownVariableNames();
+			//return env.getDirectVariableNames();
 		} catch (TemplateModelException e) {
 			throw new RemoteException("", e);
 		}
     }
     
     public Collection<String> getLocalVariableNames() throws RemoteException {
-    	try {
-			return env.getCurrentScope().getDirectVariableNames();
+    	try {    		
+			//return env.getCurrentScope().getDirectVariableNames();
+    		// FIXME : 
+    		return env.getKnownVariableNames();
 		} catch (TemplateModelException e) {
 			throw new RemoteException("", e);
 		}

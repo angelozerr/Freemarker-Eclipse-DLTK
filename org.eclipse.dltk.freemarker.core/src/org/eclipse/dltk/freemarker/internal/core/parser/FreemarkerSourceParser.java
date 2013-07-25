@@ -30,10 +30,8 @@ import org.eclipse.dltk.freemarker.core.util.SettingsUtils;
 import org.eclipse.dltk.freemarker.internal.core.parser.visitors.DLTKFreemarkerASTVisitor;
 import org.eclipse.dltk.freemarker.internal.core.util.TokenUtils;
 
-import freemarker.core.ast.TemplateElement;
-import freemarker.core.parser.ParseException;
-import freemarker.core.parser.TemplateLocation;
-import freemarker.core.parser.Token;
+import freemarker.core.ParseException;
+import freemarker.core.TemplateElement;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -66,14 +64,15 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 				reporter);
 
 		DLTKFreemarkerASTVisitor visitor = getASTBuilderVisitor(source);
-		if (root != null)
+		/*if (root != null)
 			visitor.visit(root);
 		visitor.getModuleDeclaration().rebuild();
-		return visitor.getModuleDeclaration();
+		return visitor.getModuleDeclaration();*/
+		return null;
 	}
 
 	private DLTKFreemarkerASTVisitor getASTBuilderVisitor(char[] source) {
-		return new DLTKFreemarkerASTVisitor(source);
+		return null;// new DLTKFreemarkerASTVisitor(source);
 	}
 
 	private TemplateElement parseFM(String fileName, char[] source,
@@ -103,7 +102,7 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 			int beginLine = 0;
 			int endColumn = 0;
 			int endLine = 0;
-			Token token = e.currentToken;
+			/*Token token = e.currentToken;
 			// if (token != null) {
 			// token = token.next;
 			// }
@@ -114,11 +113,12 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 				beginColumn = token.getBeginColumn();
 				endColumn = token.getEndColumn();
 			} else {
+			*/
 				beginLine = lineNumber;
 				endLine = lineNumber;
 				beginColumn = columnNumber;
 				endColumn = columnNumber;
-			}
+			//}
 
 			int[] offsets = TokenUtils.getOffsets(source, beginLine, endLine,
 					beginColumn, endColumn);
@@ -145,7 +145,8 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 			int endOffset = 2;
 			int lineNumber = 1;
 
-			List<TemplateLocation> locations = e.getFTLStack();
+			/* FIXME : offset
+			 * List<TemplateLocation> locations = e.getFTLStack();
 			if (locations != null && !locations.isEmpty()) {
 				TemplateLocation token = locations.get(locations.size() - 2);
 
@@ -165,7 +166,7 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 				// endOffset = columnNumber;
 				// }
 
-			}
+			}*/
 
 			IProblem problem = new DefaultProblem(templateName, e.getMessage(),
 					IProblem.FieldRelated, new String[0],

@@ -21,18 +21,18 @@ import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.freemarker.internal.core.parser.FreemarkerModuleDeclaration;
 import org.eclipse.dltk.freemarker.internal.core.parser.ast.expressions.Assignment;
 
-import freemarker.core.ast.ASTVisitor;
+/*import freemarker.core.ast.ASTVisitor;
 import freemarker.core.ast.AssignmentInstruction;
 import freemarker.core.ast.Expression;
 import freemarker.core.ast.IfBlock;
 import freemarker.core.ast.Include;
 import freemarker.core.ast.VarDirective;
-
+*/
 /**
  * Visitor to transform Freemarker AST 2 DLTK AST.
  * 
  */
-public class DLTKFreemarkerASTVisitor extends ASTVisitor {
+public class DLTKFreemarkerASTVisitor {/*extends ASTVisitor {
 
 	private FreemarkerModuleDeclaration moduleDeclaration = null;
 
@@ -159,5 +159,5 @@ public class DLTKFreemarkerASTVisitor extends ASTVisitor {
 		public void push(IState state) {
 			states.add(state);
 		}
-	}
+	}*/
 }

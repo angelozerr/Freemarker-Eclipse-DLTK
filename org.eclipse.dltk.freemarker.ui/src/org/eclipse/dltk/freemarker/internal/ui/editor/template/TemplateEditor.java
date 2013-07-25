@@ -143,8 +143,8 @@ public class TemplateEditor extends ScriptEditor implements
 		// Add FTL comments action
 		ActionGroup generateActions = new FreemarkerGenerateActionGroup(this,
 				ITextEditorActionConstants.GROUP_EDIT);
-		//fActionGroups.addGroup(generateActions);
-		//fContextMenuGroup.addGroup(generateActions);
+		// fActionGroups.addGroup(generateActions);
+		// fContextMenuGroup.addGroup(generateActions);
 	}
 
 	/**

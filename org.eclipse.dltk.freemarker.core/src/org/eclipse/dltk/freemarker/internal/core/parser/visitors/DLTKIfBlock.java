@@ -15,8 +15,6 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.utils.CorePrinter;
 
-import freemarker.core.ast.IfBlock;
-
 /**
  * AST DLTK {@link IfBlock} freemarker.
  * 

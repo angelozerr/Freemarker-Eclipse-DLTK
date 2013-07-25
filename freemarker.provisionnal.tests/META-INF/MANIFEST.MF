@@ -7,5 +7,6 @@ Bundle-ClassPath: tests.jar,
  lib/freemarker.jar
 Export-Package: freemarker.provisionnal.ext.ide,
  freemarker.provisionnal.ext.ide.model
-Require-Bundle: org.freemarker.freemarker;bundle-version="3.0.0",
- freemarker.provisionnal;bundle-version="1.0.0"
+Require-Bundle: freemarker.provisionnal;bundle-version="1.0.0"
+Import-Package: freemarker.ext.dom,
+ freemarker.template

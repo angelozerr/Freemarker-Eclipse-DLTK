@@ -23,10 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
+import freemarker.core.DebugBreak;
 import freemarker.core.Environment;
-import freemarker.core.ast.TemplateElement;
-import freemarker.provisionnal.core.ast.DebugBreak;
+import freemarker.core.ExtendedDebugBreak;
+import freemarker.core.TemplateElement;
 import freemarker.provisionnal.debug.Breakpoint;
 import freemarker.provisionnal.debug.DebuggerListener;
 import freemarker.provisionnal.debug.EnvironmentSuspendedEvent;
@@ -170,7 +170,8 @@ public abstract class AbstractDebuggerService implements DebuggerService {
 		}
 		TemplateElement parent = (TemplateElement) te.getParent();
 
-		DebugBreak db = new DebugBreak(te, this, breakpoint);
+		// FIXME : debug
+		DebugBreak db = new ExtendedDebugBreak(te, this, breakpoint);		
 		// TODO: Ensure there always is a parent by making sure
 		// that the root element in the template is always a MixedContent
 		// Also make sure it doesn't conflict with anyone's code.

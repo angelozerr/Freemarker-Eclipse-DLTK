@@ -1,32 +1,27 @@
-package freemarker.provisionnal.core.ast;
+package freemarker.core;
 
 import java.io.IOException;
 
 
-import freemarker.core.Environment;
-import freemarker.core.StopException;
-import freemarker.core.ast.TemplateElement;
+
 import freemarker.provisionnal.debug.Breakpoint;
 import freemarker.provisionnal.debug.impl.AbstractDebuggerService;
 import freemarker.template.TemplateException;
 
-/**
- * @author Attila Szegedi
- * @version $Id: DebugBreak.java,v 1.2 2004/09/11 13:11:14 stephanmueller Exp $
- */
-public class DebugBreak extends TemplateElement {
+public class ExtendedDebugBreak extends DebugBreak {
+
 	private final AbstractDebuggerService debuggerService;
 	private boolean suspendAfter = false;
 	private final String templateName;
 	private final String fileName;
+	private TemplateElement nestedBlock;
 
-	public DebugBreak(TemplateElement nestedBlock,
+	public ExtendedDebugBreak(TemplateElement nestedBlock,
 			AbstractDebuggerService debuggerService, Breakpoint breakpoint) {
-		this.nestedBlock = nestedBlock;
-		nestedBlock.setParent(this);
-		copyLocationFrom(nestedBlock);
+		super(nestedBlock);
 		this.debuggerService = debuggerService;
-
+		this.nestedBlock = nestedBlock;
+		
 		// Debug Break must be suspended before or after the TemplateElement te
 		// founded.
 		// After suspend, must be done when breakpoint line is not the same
@@ -40,12 +35,14 @@ public class DebugBreak extends TemplateElement {
 		this.fileName = breakpoint.getFileName();
 	}
 
-	public void execute(Environment env) throws TemplateException, IOException {
+
+	@Override
+	public void accept(Environment env) throws TemplateException, IOException {
 		int line = 0;
 		if (suspendAfter) {
 			// Suspend must be done after the execution of the nestedBlock
 			line = nestedBlock.getEndLine();
-			nestedBlock.execute(env);
+			nestedBlock.accept(env);
 		} else {
 			// Suspend must be done before the execution of the nestedBlock
 			line = nestedBlock.getBeginLine();
@@ -54,14 +51,11 @@ public class DebugBreak extends TemplateElement {
 		if (debuggerService.suspendEnvironment(env, line, templateName,
 				fileName)) {
 			if (!suspendAfter) {
-				nestedBlock.execute(env);
+				nestedBlock.accept(env);
 			}
 		} else {
 			throw new StopException(env, "Stopped by debugger");
 		}
 	}
 
-	public String getDescription() {
-		return nestedBlock.getDescription();
-	}
 }

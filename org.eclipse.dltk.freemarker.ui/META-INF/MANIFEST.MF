@@ -19,7 +19,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.dltk.freemarker.core;bundle-version="1.0.0",
- org.freemarker.freemarker;bundle-version="3.0.0",
  org.eclipse.search,
  org.eclipse.jdt.launching
 Bundle-ActivationPolicy: lazy
@@ -27,5 +26,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %pluginProvider
 Import-Package: freemarker.provisionnal.ext.ide,
  freemarker.provisionnal.ext.ide.syntax,
- freemarker.provisionnal.template
+ freemarker.provisionnal.template,
+ freemarker.template
 Export-Package: org.eclipse.dltk.freemarker.ui
