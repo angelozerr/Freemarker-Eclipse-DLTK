@@ -23,8 +23,10 @@ import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;
 import org.eclipse.dltk.compiler.problem.IProblem;
+import org.eclipse.dltk.compiler.problem.IProblemIdentifier;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.compiler.problem.ProblemSeverities;
+import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.freemarker.core.manager.FreemarkerTemplateManager;
 import org.eclipse.dltk.freemarker.core.util.SettingsUtils;
 import org.eclipse.dltk.freemarker.internal.core.parser.visitors.DLTKFreemarkerASTVisitor;
@@ -48,10 +50,11 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 		char[] source = input.getContentsAsCharArray();
 
 		IFile templateFile = getTemplateFile(input);
-		
-		// Get configuration from template settings (or default configuration if is null).
+
+		// Get configuration from template settings (or default configuration if
+		// is null).
 		Configuration configuration = getConfiguration(templateFile);
-		
+
 		// Get model from template settings (can be null).
 		Object model = getModelFromSettings(templateFile);
 
@@ -64,10 +67,11 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 				reporter);
 
 		DLTKFreemarkerASTVisitor visitor = getASTBuilderVisitor(source);
-		/*if (root != null)
-			visitor.visit(root);
-		visitor.getModuleDeclaration().rebuild();
-		return visitor.getModuleDeclaration();*/
+		/*
+		 * if (root != null) visitor.visit(root);
+		 * visitor.getModuleDeclaration().rebuild(); return
+		 * visitor.getModuleDeclaration();
+		 */
 		return null;
 	}
 
@@ -85,8 +89,8 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 		TemplateElement root = null;
 		try {
 			/* Create Freemarker template */
-			template = FreemarkerTemplateManager.getManager().process(templateName,
-					reader, configuration, model, null, null);
+			template = FreemarkerTemplateManager.getManager().process(
+					templateName, reader, configuration, model, null, null);
 		} catch (ParseException e) {
 			// Syntax error
 
@@ -102,23 +106,19 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 			int beginLine = 0;
 			int endColumn = 0;
 			int endLine = 0;
-			/*Token token = e.currentToken;
-			// if (token != null) {
-			// token = token.next;
+			/*
+			 * Token token = e.currentToken; // if (token != null) { // token =
+			 * token.next; // }
+			 * 
+			 * if (token != null) { beginLine = token.getBeginLine(); endLine =
+			 * token.getEndLine(); beginColumn = token.getBeginColumn();
+			 * endColumn = token.getEndColumn(); } else {
+			 */
+			beginLine = lineNumber;
+			endLine = lineNumber;
+			beginColumn = columnNumber;
+			endColumn = columnNumber;
 			// }
-
-			if (token != null) {
-				beginLine = token.getBeginLine();
-				endLine = token.getEndLine();
-				beginColumn = token.getBeginColumn();
-				endColumn = token.getEndColumn();
-			} else {
-			*/
-				beginLine = lineNumber;
-				endLine = lineNumber;
-				beginColumn = columnNumber;
-				endColumn = columnNumber;
-			//}
 
 			int[] offsets = TokenUtils.getOffsets(source, beginLine, endLine,
 					beginColumn, endColumn);
@@ -130,12 +130,13 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 			if (endOffset == -1) {
 				endOffset = columnNumber;
 			}
+			endOffset = startOffset + 2;
 
 			// Create DLTK IProblem by using Token error
 
 			IProblem problem = new DefaultProblem(templateName, e.getMessage(),
-					IProblem.Syntax, new String[0], ProblemSeverities.Error,
-					startOffset, endOffset, lineNumber);
+					FreemarkerParserProblems.INTERNAL_ERROR, null,
+					ProblemSeverities.Error, startOffset, -1, lineNumber, columnNumber);
 
 			reporter.reportProblem(problem);
 		} catch (TemplateException e) {
@@ -145,28 +146,23 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 			int endOffset = 2;
 			int lineNumber = 1;
 
-			/* FIXME : offset
-			 * List<TemplateLocation> locations = e.getFTLStack();
-			if (locations != null && !locations.isEmpty()) {
-				TemplateLocation token = locations.get(locations.size() - 2);
-
-				int beginLine = token.getBeginLine();
-				int endLine = token.getEndLine();
-				int beginColumn = token.getBeginColumn();
-				int endColumn = token.getEndColumn();
-
-				int[] offsets = TokenUtils.getOffsets(source, beginLine,
-						endLine, beginColumn, endColumn);
-				startOffset = offsets[0];
-				if (startOffset == -1) {
-					startOffset = lineNumber;
-				}
-				endOffset = offsets[1];
-				// if (endOffset == -1) {
-				// endOffset = columnNumber;
-				// }
-
-			}*/
+			/*
+			 * FIXME : offset List<TemplateLocation> locations =
+			 * e.getFTLStack(); if (locations != null && !locations.isEmpty()) {
+			 * TemplateLocation token = locations.get(locations.size() - 2);
+			 * 
+			 * int beginLine = token.getBeginLine(); int endLine =
+			 * token.getEndLine(); int beginColumn = token.getBeginColumn(); int
+			 * endColumn = token.getEndColumn();
+			 * 
+			 * int[] offsets = TokenUtils.getOffsets(source, beginLine, endLine,
+			 * beginColumn, endColumn); startOffset = offsets[0]; if
+			 * (startOffset == -1) { startOffset = lineNumber; } endOffset =
+			 * offsets[1]; // if (endOffset == -1) { // endOffset =
+			 * columnNumber; // }
+			 * 
+			 * }
+			 */
 
 			IProblem problem = new DefaultProblem(templateName, e.getMessage(),
 					IProblem.FieldRelated, new String[0],
