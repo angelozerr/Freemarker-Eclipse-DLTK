@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %pluginProvider
-Import-Package: freemarker.provisionnal.debug,
+Import-Package: freemarker.debug,
  freemarker.provisionnal.debug.impl.dbgp,
  freemarker.provisionnal.template,
- freemarker.template
+ freemarker.template;version="2.3.21.nightly_20130724T090749Z"

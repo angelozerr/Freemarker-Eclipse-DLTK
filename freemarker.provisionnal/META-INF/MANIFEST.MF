@@ -4,16 +4,12 @@ Bundle-Name: Freemarker Provisionnal
 Bundle-SymbolicName: freemarker.provisionnal
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: freemarker.core,
- freemarker.provisionnal.debug,
- freemarker.provisionnal.debug.impl,
- freemarker.provisionnal.debug.impl.rmi,
- freemarker.provisionnal.ext.ide,
+Export-Package: freemarker.provisionnal.ext.ide,
  freemarker.provisionnal.ext.ide.syntax,
  freemarker.provisionnal.template
-Import-Package: freemarker.cache,
- freemarker.core,
- freemarker.ext.util,
- freemarker.log,
- freemarker.template,
- freemarker.template.utility
+Import-Package: freemarker.cache;version="2.3.21.nightly_20130726T092836Z",
+ freemarker.core;version="2.3.21.nightly_20130726T092836Z",
+ freemarker.ext.util;version="2.3.21.nightly_20130726T092836Z",
+ freemarker.log;version="2.3.21.nightly_20130726T092836Z",
+ freemarker.template;version="2.3.21.nightly_20130726T092836Z",
+ freemarker.template.utility;version="2.3.21.nightly_20130726T092836Z"

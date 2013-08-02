@@ -136,7 +136,7 @@ public class FreemarkerSourceParser extends AbstractSourceParser {
 
 			IProblem problem = new DefaultProblem(templateName, e.getMessage(),
 					FreemarkerParserProblems.INTERNAL_ERROR, null,
-					ProblemSeverities.Error, startOffset, -1, lineNumber, columnNumber);
+					ProblemSeverities.Error, startOffset, endOffset, lineNumber, columnNumber);
 
 			reporter.reportProblem(problem);
 		} catch (TemplateException e) {

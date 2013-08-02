@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
 
-<target name="Freemarker DLTK" sequenceNumber="29">
+<target name="Freemarker DLTK" sequenceNumber="30">
 <locations>
-<location path="${eclipse_home}" type="Profile"/>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.dltk.core.feature.group" version="4.0.0.201206120848"/>
 <unit id="org.eclipse.dltk.core.sdk.feature.group" version="4.0.0.201206120848"/>
@@ -13,7 +12,7 @@
 <unit id="org.eclipse.dltk.python.sdk.feature.group" version="4.0.0.201206120848"/>
 <repository location="http://download.eclipse.org/technology/dltk/updates-dev/4.0-stable/"/>
 </location>
-<location path="${project_loc}/plugins" type="Directory"/>
+<location path="${eclipse_home}" type="Profile"/>
 </locations>
 <environment>
 <os>win32</os>

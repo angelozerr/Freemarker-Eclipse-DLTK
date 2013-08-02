@@ -7,9 +7,9 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.dltk.dbgp.debugger;bundle-version="1.0.0",
  org.eclipse.dltk.debug,
  org.eclipse.core.runtime
-Import-Package: freemarker.core,
- freemarker.provisionnal.debug,
- freemarker.provisionnal.debug.impl,
+Import-Package: freemarker.core;version="2.3.21.nightly_20130724T090749Z",
+ freemarker.debug;version="2.3.21.nightly_20130724T090749Z",
+ freemarker.debug.impl;version="2.3.21.nightly_20130724T090749Z",
  freemarker.provisionnal.template,
- freemarker.template
+ freemarker.template;version="2.3.21.nightly_20130724T090749Z"
 Export-Package: freemarker.provisionnal.debug.impl.dbgp
