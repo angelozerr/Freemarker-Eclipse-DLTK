@@ -16,15 +16,13 @@ import org.eclipse.dltk.dbgp.debugger.IVariableAdder;
 import org.eclipse.dltk.dbgp.debugger.debugger.AbstractDebugger;
 
 import freemarker.core.StopException;
-import freemarker.provisionnal.debug.Breakpoint;
-import freemarker.provisionnal.debug.DebugModel;
-import freemarker.provisionnal.debug.DebuggedEnvironment;
-import freemarker.provisionnal.debug.DebuggerListener;
-import freemarker.provisionnal.debug.EnvironmentSuspendedEvent;
-import freemarker.provisionnal.debug.impl.DebuggerService;
+import freemarker.debug.Breakpoint;
+import freemarker.debug.DebugModel;
+import freemarker.debug.DebuggedEnvironment;
+import freemarker.debug.DebuggerListener;
+import freemarker.debug.DebuggerService;
+import freemarker.debug.EnvironmentSuspendedEvent;
 import freemarker.provisionnal.template.ConfigurationProvider;
-import freemarker.provisionnal.template.DebuggableConfiguration;
-import freemarker.provisionnal.template.DebuggableConfigurationWrapper;
 import freemarker.provisionnal.template.ModelProvider;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -71,7 +69,7 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 				/* Create Freemarker template */
 				Template template = new Template(templateName, reader,
 						configuration);
-				debuggerService.registerTemplate(template);
+				//debuggerService.registerTemplate(template);
 
 				/* Merge data-model with template */
 				template.process(model, writer);
@@ -98,16 +96,15 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 	}
 
 	private Configuration getConfiguration(File templateFile) {
+		Configuration configuration = null;
 		if (configurationProvider != null) {
-			Configuration configuration = configurationProvider
-					.getConfiguration();
-			if (configuration != null) {
-				return new DebuggableConfigurationWrapper(configuration,
-						debuggerService);
-			}
+			configuration = configurationProvider.getConfiguration();
 		}
-		DebuggableConfiguration configuration = new DebuggableConfiguration(
-				debuggerService);
+		if (configuration == null) {
+			configuration = new Configuration();
+		}
+		configuration.setDebuggerService(debuggerService);
+		;
 		initializeConfiguration(templateFile, configuration);
 		return configuration;
 	}
@@ -151,7 +148,10 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 	@Override
 	protected Breakpoint createBreakpoint(String filename, int lineno) {
 		String templateName = super.getRelativePath(filename);
-		Breakpoint breakPoint = new Breakpoint(templateName, lineno, filename);
+		Breakpoint breakPoint = new Breakpoint(templateName, lineno);// new
+																		// Breakpoint(templateName,
+																		// lineno,
+																		// filename);
 		debuggerService.addBreakpoint(breakPoint);
 		return breakPoint;
 	}
@@ -179,7 +179,7 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 			throws RemoteException {
 
 		this.currentEnvironmentSuspendedEvent = e;
-		String fileName = e.getFileName();
+		String fileName = e.getName(); // e.getFileName();
 		// String fileName = "file:/" +
 		// e.getEnvironment().getTemplate().getName();
 
@@ -200,8 +200,9 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 			String varName = expression;
 
 			try {
-				DebugModel var = currentEnvironmentSuspendedEvent
-						.getEnvironment().getVariable(varName);
+				DebugModel var = getVariable(
+						currentEnvironmentSuspendedEvent.getEnvironment(),
+						varName);
 				if (var != null) {
 					int types = var.getModelTypes();
 					if ((types & DebugModel.TYPE_BOOLEAN) == DebugModel.TYPE_BOOLEAN) {
@@ -239,14 +240,12 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 				switch (contextId) {
 				case DbgpContext.DBGP_CONTEXT_GLOBAL_ID:
 					// Global
-					Collection<String> globalNames = environment
-							.getGlobalVariableNames();
+					String[] globalNames = getGlobalVariableNames(environment);
 					populateVariables(globalNames, environment, variableAdder);
 					break;
 				case DbgpContext.DBGP_CONTEXT_LOCAL_ID:
 					// Global
-					Collection<String> localNames = environment
-							.getLocalVariableNames();
+					String[] localNames = getLocalVariableNames(environment);
 					populateVariables(localNames, environment, variableAdder);
 					break;
 
@@ -259,14 +258,17 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 		}
 	}
 
-	private void populateVariables(Collection<String> varNames,
+	private void populateVariables(String[] varNames,
 			DebuggedEnvironment environment, IVariableAdder variableAdder) {
+		if (varNames == null) {
+			return;
+		}
 		Object value = null;
 		for (String varName : varNames) {
 
 			DebugModel varValue;
 			try {
-				varValue = environment.getVariable(varName);
+				varValue = getVariable(environment, varName);
 
 				if (varValue != null) {
 
@@ -288,6 +290,47 @@ public class LocalDebuggerImpl extends AbstractDebugger<Breakpoint> implements
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private String[] getLocalVariableNames(DebuggedEnvironment environment)
+			throws RemoteException {
+		// environment.get("knownVariables")
+		// environment.keys();
+		try {
+			DebugModel model = environment.get("globalNamespace");
+			return model.keys();
+
+		} catch (TemplateModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private String[] getGlobalVariableNames(DebuggedEnvironment environment)
+			throws RemoteException {
+		try {
+			DebugModel model = environment.get("currentNamespace");
+			return model.keys();
+		} catch (TemplateModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private DebugModel getVariable(DebuggedEnvironment environment,
+			String varName) {
+		try {
+			return environment.get("knownVariables").get(varName);
+		} catch (TemplateModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
