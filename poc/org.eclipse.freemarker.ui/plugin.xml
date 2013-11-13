@@ -67,4 +67,9 @@
 		</context>
 	</extension>
 		     
+	<!--Preferences:-->		     
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="org.eclipse.freemarker.internal.ui.preferences.FMUIPreferenceInitializer" />
+	</extension>		     
 </plugin>        

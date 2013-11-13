@@ -30,12 +30,12 @@ public class FMDOMModelParser extends XMLModelParser {
 	}
 
 	protected boolean isNestedTag(String regionType) {
-		return regionType == FMRegionContext.PHP_OPEN
+		return regionType == FMRegionContext.FM_DIRECTIVE_START
 				|| regionType == FMRegionContext.PHP_CLOSE;
 	}
 
 	protected boolean isNestedTagOpen(String regionType) {
-		return regionType == FMRegionContext.PHP_OPEN;
+		return regionType == FMRegionContext.FM_DIRECTIVE_START;
 	}
 
 	protected String computeNestedTag(String regionType, String tagName,

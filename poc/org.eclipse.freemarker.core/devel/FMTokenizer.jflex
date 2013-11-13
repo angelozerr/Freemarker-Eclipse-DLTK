@@ -555,6 +555,11 @@ OpenDirectiveStart          = "<#"
 CloseDirectiveStart         = "</#"
 MacroRefStart               = "<" "/"? "@"
 
+%state ST_FM_TAG_NAME
+%state ST_FM_BODY
+%state ST_DIRECTIVE_TEXT
+%state ST_DIRECTIVE_END
+
 // [1] document ::= prolog element Misc*
 document = ({prolog} {element} {Misc}*)
 
@@ -916,15 +921,39 @@ Digit =  [\u0030-\u0039\u0660-\u0669\u06F0-\u06F9\u0966-\u096F\u09E6-\u09EF\u0A6
 // | [#x30FC-#x30FE]
 Extender = [\u00B7\u02D0\u02D1\u0387\u0640\u0E46\u0EC6\u3005\u3031-\u3035\u309D-\u309E\u30FC-\u30FE]
 
+FMStart = <#
+FMEnd = >
+
+BLANK = [" ", "\t", "\n", "\r"]>
+  
+START_TAG = "<#" | "[#"
+END_TAG = "</" | "</#" | "[/#">
+ASSIGN = START_TAG "assign" BLANK {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    
 %%
 
 
-<YYINITIAL> {
-    {OpenDirectiveStart} | {MacroRefStart} | {CloseDirectiveStart} {
-    if(Debug.debugTokenizer)
-		dump("FM directive start");//$NON-NLS-1$
-        return FM_DIRECTIVE_START;
-    }
+{FMStart}{Name} {
+	if(Debug.debugTokenizer)
+		dump("\nFM start");//$NON-NLS-1$
+	fStateStack.push(yystate());
+	yybegin(ST_DIRECTIVE_TEXT);
+	return FM_TAG_OPEN;
+}
+<ST_DIRECTIVE_TEXT> .|\r|\n {
+	if(Debug.debugTokenizer)
+		dump("FM body text");//$NON-NLS-1$
+	String blockContext = doBlockScan(">", FM_DIRECTIVE_TEXT, ST_DIRECTIVE_END);//$NON-NLS-1$
+	if(blockContext == FM_DIRECTIVE_TEXT)
+		yybegin(ST_DIRECTIVE_END);
+	return blockContext;
+}
+
+<ST_DIRECTIVE_END> {FMEnd} {
+	if(Debug.debugTokenizer)
+		dump("FM end");//$NON-NLS-1$
+	yybegin(fStateStack.pop());
+	return FM_TAG_CLOSE;
 }
 
 /* white space within a tag */

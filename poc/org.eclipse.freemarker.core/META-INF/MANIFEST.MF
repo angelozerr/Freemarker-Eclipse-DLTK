@@ -15,4 +15,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.freemarker.internal.core.FMCorePlugin
-Export-Package: org.eclipse.freemarker.internal.core.documentModel.partitioner;x-friends:="org.eclipse.freemarker.ui"
+Export-Package: org.eclipse.freemarker.internal.core.documentModel.parser,
+ org.eclipse.freemarker.internal.core.documentModel.partitioner;x-friends:="org.eclipse.freemarker.ui"

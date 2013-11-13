@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (sc) 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,8 +45,8 @@ public class FMSourceParser extends XMLSourceParser {
 	 */
 	public BlockTokenizer getTokenizer() {
 		if (fTokenizer == null) {
-			FMTokenizer phpTokenizer = new FMTokenizer();
-			phpTokenizer.setProject(project);
+			JSPTokenizer phpTokenizer = new JSPTokenizer();
+			//phpTokenizer.setProject(project);
 			fTokenizer = phpTokenizer;
 		}
 		return fTokenizer;
@@ -54,8 +54,8 @@ public class FMSourceParser extends XMLSourceParser {
 
 	public RegionParser newInstance() {
 		FMSourceParser newInstance = new FMSourceParser();
-		FMTokenizer tokenizer = (FMTokenizer) getTokenizer().newInstance();
-		tokenizer.setProject(project);
+		JSPTokenizer tokenizer = (JSPTokenizer) getTokenizer().newInstance();
+		//tokenizer.setProject(project);
 		newInstance.setTokenizer(tokenizer);
 		return newInstance;
 	}
@@ -132,7 +132,7 @@ public class FMSourceParser extends XMLSourceParser {
 			}
 			// the following contexts OPEN new StructuredDocumentRegions
 			else if ((currentNode != null && currentNode.isEnded())
-					|| (type == FMRegionContext.PHP_OPEN)
+					|| (type == FMRegionContext.FM_DIRECTIVE_START)
 					|| (type == DOMRegionContext.XML_CONTENT)
 					|| (type == DOMRegionContext.XML_CHAR_REFERENCE)
 					|| (type == DOMRegionContext.XML_ENTITY_REFERENCE)

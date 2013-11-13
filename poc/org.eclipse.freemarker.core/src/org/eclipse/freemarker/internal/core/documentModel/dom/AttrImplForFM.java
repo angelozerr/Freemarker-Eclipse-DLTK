@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
 public class AttrImplForFM extends AttrImpl {
 
 	protected boolean isNestedLanguageOpening(String regionType) {
-		return regionType == FMRegionContext.PHP_OPEN;
+		return regionType == FMRegionContext.FM_DIRECTIVE_START;
 	}
 
 	protected void setOwnerDocument(Document ownerDocument) {
